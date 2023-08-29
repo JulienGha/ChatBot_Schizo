@@ -1,3 +1,6 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+/Llama-2-13b-chat/
+/Llama-2-13b-chat-hf/
+/datasets/
