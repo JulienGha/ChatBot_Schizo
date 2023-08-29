@@ -9,9 +9,11 @@ function HomePage() {
         <div>
             <Navbar></Navbar>
             <div className='HomePage'>
-                <h1>Welcome to the Chatbot</h1>
-                <Link to="/resume">Resume a Chat</Link>
-                <Link to="/create">Create a New Chat</Link>
+                <h1>Welcome to Hermegency</h1>
+                <div className='ContentLinks'>
+                    <Link to="/resume">Resume a Chat</Link>
+                    <Link to="/create">Create a New Chat</Link>
+                </div>
             </div>
             <Footer></Footer>
         </div>
