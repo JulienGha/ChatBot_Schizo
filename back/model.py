@@ -1,16 +1,17 @@
 import transformers
 from transformers import LlamaForCausalLM
-
 import json
+from sentence_transformers import SentenceTransformer
 
 
 def model_generator(file):
-    # Load the Llama 2 model and tokenizer
-    model = LlamaForCausalLM.from_pretrained("./Llama-2-13b-chat-hf")
+
+    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
     # Load the JSON file
     with open('datasets/' + file + '.json', 'r') as f:
         text = json.load(f)
+    print(text)
 
     # Train the model on the text
     model.train_on_dataset(text)
@@ -19,4 +20,11 @@ def model_generator(file):
     model.save_pretrained('models/' + file)
 
 
-model_generator('dsm5')
+# model_generator('dsm5')
+
+sentences = ["This is an example sentence", "Each sentence is converted"]
+
+model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+embeddings = model.encode(sentences)
+print(embeddings)
+

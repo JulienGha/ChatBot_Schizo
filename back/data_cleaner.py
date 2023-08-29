@@ -36,4 +36,4 @@ def convert_pdf_into_json(file):
         f.write(json_object)
 
 
-convert_pdf_into_json('Hallucinations_visual')
+convert_pdf_into_json('Prevalence of alcohol use disorders inschizophrenia')
