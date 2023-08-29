@@ -1,0 +1,6 @@
+Flask==2.0.1
+Pillow==8.2.0
+redis==3.5.3
+rq==1.8.0
+flask_cors==3.0.10
+datetime
