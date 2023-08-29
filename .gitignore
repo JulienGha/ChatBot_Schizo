@@ -1,4 +1,4 @@
-back/app/Llama-2-13b-chat/
-back/app/Llama-2-13b-chat-hf/
-back/app/datasets/
+back/Llama-2-13b-chat/
+back/Llama-2-13b-chat-hf/
+back/datasets/
 state_art/
