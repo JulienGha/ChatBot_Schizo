@@ -3,41 +3,32 @@ from flask_cors import CORS
 from rq import Queue
 from workers import conn
 from datetime import datetime
+from pymongo import MongoClient
 import os
+
 
 app = Flask(__name__)
 CORS(app)
 q = Queue(connection=conn)
-ALLOWED_EXTENSIONS = {'png', 'tif'}    # defining the possible file format
 
 
-# function to treat the possible format
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# Create a MongoDB client and establish a connection
+client = MongoClient('localhost', 27017)
+db = client['mydatabase']
+collection = db['chats']
 
 
-@app.route('/image', methods=['POST'])
+@app.route('/create', methods=['POST'])
 def post_image():
-
     job = None
-    if 'image' not in request.files:
-        return jsonify({"error": "No image part in the request"}), 400
-
-    file = request.files['image']
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
 
     # to ensure that our job_id is unique we use the current time
     unique_id = datetime.now().strftime("%Y%m%d%H%M%S")
 
-    os.makedirs("/data/temp_files", exist_ok=True)
-
-    if file and allowed_file(file.filename):
-        # Enqueue the image processing task
-        temp_filename = unique_id + "." + file.filename.rsplit('.', 1)[1].lower()
-        # Our docker grants access to the data repository for our app
-        file.save(f"/data/temp_files/{temp_filename}")
-        job = q.enqueue(run_tesseract, temp_filename, job_id=unique_id)
+    # Enqueue the image processing task
+    temp_filename = unique_id
+    # Our docker grants access to the data repository for our app
+    job = q.enqueue(run_tesseract, temp_filename, job_id=unique_id)
 
     if job:
         return jsonify({"task_id": unique_id}), 202
@@ -45,7 +36,7 @@ def post_image():
         return jsonify({"error": "Failed to enqueue job"}), 500
 
 
-@app.route('/image', methods=['GET'])
+@app.route('/resume', methods=['GET'])
 def get_image():
     # Our front saved the job_id, when it sends a request to access the status of the detection it used that one
     task_id = request.args.get('task_id')
@@ -65,8 +56,12 @@ def get_image():
 # test function to see if our client can send request
 @app.route('/test', methods=['GET'])
 def get_test():
+    new_document = {"name": "John", "age": 30}
+    collection.insert_one(new_document)
     return "good"
 
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+    client.close()
+
