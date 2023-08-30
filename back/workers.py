@@ -1,5 +1,6 @@
-import redis
+"""import redis
 from rq import Worker, Queue, Connection
+from tasks import create_new_chat
 
 listen = ['high', 'default', 'low']
 
@@ -11,4 +12,4 @@ conn = redis.from_url(redis_url)
 if __name__ == '__main__':
     with Connection(conn):
         worker = Worker(map(Queue, listen))
-        worker.work()
+        worker.work()"""

@@ -1,15 +1,21 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
-from rq import Queue
-from workers import conn
-from datetime import datetime
+# from rq import Queue
+# from workers import conn
+from datetime import datetime, timedelta
 from pymongo import MongoClient
+import bcrypt
+import jwt
+from tasks import create_new_chat
+import uuid
+import random
+import string
 import os
 
 
 app = Flask(__name__)
 CORS(app)
-q = Queue(connection=conn)
+# q = Queue(connection=conn)
 
 
 # Create a MongoDB client and establish a connection
@@ -18,39 +24,83 @@ db = client['mydatabase']
 collection = db['chats']
 
 
-@app.route('/create', methods=['POST'])
-def post_image():
-    job = None
+# Your JWT secret key
+JWT_SECRET = "345TGHIOPUYFRDFGJNCB81234RVB9HB99YNXZXA0AXHBXLPM"
 
-    # to ensure that our job_id is unique we use the current time
-    unique_id = datetime.now().strftime("%Y%m%d%H%M%S")
+
+def generate_unique_id():
+    unique_id = str(uuid.uuid4().hex)
+    random_chars = ''.join(random.choices(string.ascii_letters + string.digits, k=4))
+    return unique_id + random_chars
+
+
+@app.route('/create', methods=['POST'])
+def create_chat():
+
+    # Generate unique chat ID
+    date = datetime.now().strftime("%Y%m%d%H%M%S")
+
+    # Encrypt password
+    password = request.json.get('password')  # Get password from request
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     # Enqueue the image processing task
-    temp_filename = unique_id
-    # Our docker grants access to the data repository for our app
-    job = q.enqueue(run_tesseract, temp_filename, job_id=unique_id)
+    unique_id = date + generate_unique_id()
 
-    if job:
-        return jsonify({"task_id": unique_id}), 202
+    chat_data = {
+        "chat_id": unique_id,
+        "password": hashed_password
+    }
+    collection.insert_one(chat_data)
+
+    # Generate JWT token
+    expiration = datetime.utcnow() + timedelta(hours=1)  # Set token expiration time
+    payload = {
+        "chat_id": str(unique_id),
+        "exp": expiration
+    }
+    token = jwt.encode(payload, JWT_SECRET, algorithm='HS256')
+
+    # Create response with JWT cookie
+    response = make_response(jsonify({"chatId": unique_id}), 200)
+    response.set_cookie('jwt', token, httponly=True)
+
+    return response
+    """job = None
+        job = q.enqueue(create_new_chat, unique_id, hashed_password, job_id=unique_id)  # Replace with your task function"""
+    """else:
+        return jsonify({"error": "Failed to enqueue job"}), 500"""
+
+
+@app.route('/resume', methods=['POST'])
+def resume_chat():
+    chat_id = request.json.get('chatId')
+    password = request.json.get('password')
+
+    # Retrieve chat data from MongoDB based on chat_id
+    chat_data = collection.find_one({"chat_id": chat_id})
+
+    if chat_data:
+        stored_password = chat_data.get('password')
+
+        # Verify password using bcrypt
+        if bcrypt.checkpw(password.encode('utf-8'), stored_password):
+            # Generate and send JWT as a cookie
+            expiration = datetime.utcnow() + timedelta(hours=1)  # Set token expiration time
+            payload = {
+                "chat_id": str(chat_data['_id']),
+                "exp": expiration
+            }
+            token = jwt.encode(payload, JWT_SECRET, algorithm='HS256')
+            response = jsonify({"message": "Chat resumed successfully"})
+            response.set_cookie('jwt_token', token, httponly=True)
+
+            return response, 200
+        else:
+            return jsonify({"error": "Invalid password"}), 401
     else:
-        return jsonify({"error": "Failed to enqueue job"}), 500
+        return jsonify({"error": "Chat not found"}), 404
 
-
-@app.route('/resume', methods=['GET'])
-def get_image():
-    # Our front saved the job_id, when it sends a request to access the status of the detection it used that one
-    task_id = request.args.get('task_id')
-    if not task_id:
-        return jsonify({"error": "task_id is required"}), 400
-
-    job = q.fetch_job(task_id)
-    if not job:
-        return jsonify({"error": "No such task"}), 404
-
-    if job.is_finished:
-        return jsonify({"result": job.result}), 200
-    else:
-        return jsonify({"result": None}), 202
 
 
 # test function to see if our client can send request

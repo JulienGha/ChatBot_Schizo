@@ -4,3 +4,10 @@ redis==3.5.3
 rq==1.8.0
 flask_cors==3.0.10
 datetime
+pymongo
+bcrypt
+uuid
+random
+string
+jwt
+PyJWT
