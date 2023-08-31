@@ -77,8 +77,12 @@ def resume_chat():
     chat_id = request.json.get('chatId')
     password = request.json.get('password')
 
+    print("ici")
+
     # Retrieve chat data from MongoDB based on chat_id
     chat_data = collection.find_one({"chat_id": chat_id})
+
+    print("la")
 
     if chat_data:
         stored_password = chat_data.get('password')
@@ -97,17 +101,15 @@ def resume_chat():
 
             return response, 200
         else:
-            return jsonify({"error": "Invalid password"}), 401
+            return jsonify({"message": "Invalid password"}), 401
     else:
-        return jsonify({"error": "Chat not found"}), 404
+        return jsonify({"message": "Chat not found"}), 404
 
 
 
 # test function to see if our client can send request
 @app.route('/test', methods=['GET'])
 def get_test():
-    new_document = {"name": "John", "age": 30}
-    collection.insert_one(new_document)
     return "good"
 
 

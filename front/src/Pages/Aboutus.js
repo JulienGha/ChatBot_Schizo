@@ -7,10 +7,9 @@ function Aboutus() {
     return (
         <div>
             <Navbar></Navbar>
-            <div className=''>
+            <div className='AboutusPage'>
                 <h1>Welcome to Hermegency</h1>
                 <div className=''>
-                    
                 </div>
             </div>
             <Footer></Footer>

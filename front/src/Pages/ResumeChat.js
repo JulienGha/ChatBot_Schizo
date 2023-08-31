@@ -1,22 +1,39 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
 import '../Styles/Resume.css'
 
 const ResumeChatPage = () => {
-
+  const history = useHistory();
   const [chatId, setChatId] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleResumeChat = () => {
-    // Send request to server for resuming chat using chatId and password
+  const handleResumeChat = async () => {
+    try {
+      var SignatureRequest = {
+        method: 'post',
+        url: `http://localhost:5000/resume`,
+        data: {
+            chatId: chatId,
+            password: password,
+        },
+    };
+    await axios(SignatureRequest)
+        .then(response => {
+            console.log(response)
+            history.push(`/chat/${chatId}`)
+        })
+      } catch (error) {
+        console.log(error)
+      }
   };
 
   return (
     <div>
       <Navbar></Navbar>
-      <div>
+      <div className='ResumePage'>
         <input
           type="text"
           placeholder="Chat ID"
