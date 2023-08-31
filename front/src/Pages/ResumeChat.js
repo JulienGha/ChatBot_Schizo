@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
 import '../Styles/Resume.css'
 
 const ResumeChatPage = () => {
-  const history = useHistory();
   const [chatId, setChatId] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('')
 
   const handleResumeChat = async () => {
     try {
@@ -16,18 +15,22 @@ const ResumeChatPage = () => {
         method: 'post',
         url: `http://localhost:5000/resume`,
         data: {
-            chatId: chatId,
-            password: password,
+          chatId: chatId,
+          password: password,
         },
-    };
-    await axios(SignatureRequest)
+      };
+      await axios(SignatureRequest)
         .then(response => {
-            console.log(response)
-            history.push(`/chat/${chatId}`)
+          console.log(response)
+          if (response.status === 200) {
+            window.open("/chat/" + chatId);
+          } else {
+            setErrorMsg(response.message)
+          }
         })
-      } catch (error) {
-        console.log(error)
-      }
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (
@@ -47,6 +50,7 @@ const ResumeChatPage = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button onClick={handleResumeChat}>Resume Chat</button>
+        <p>{errorMsg}</p>
       </div>
       <Footer></Footer>
     </div>

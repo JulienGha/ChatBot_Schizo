@@ -20,8 +20,8 @@ const Navbar = () => {
     return (
             <div className="DivNavbar">
                 <Link to="*">Hermegency</Link>
-                <button onClick={handleCreateChat}>Bouton de test</button>
-                <p>target</p>
+                <button onClick={handleCreateChat}>Server test</button>
+                <p></p>
             </div>
         )
 }

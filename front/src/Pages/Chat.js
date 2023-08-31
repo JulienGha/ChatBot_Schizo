@@ -7,7 +7,7 @@ import '../Styles/Chat.css'
 const ChatbotInterface = () => {
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
-    const { chatId } = useParams();
+    const params = useParams()
 
     const handleSendMessage = () => {
         if (inputMessage.trim() === '') return;
@@ -26,9 +26,9 @@ const ChatbotInterface = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <div className="chatbot-interface">
+            <div className="ChatPage">
                 <div className="chat-window">
-                    <h1>Chatbot Interface for Chat ID: {chatId}</h1>
+                    <h1>Chatbot Interface for Chat ID: {params.chat_id}</h1>
                     {messages.map((message, index) => (
                         <div key={index} className={`message ${message.type}`}>
                             {message.text}
