@@ -1,16 +1,82 @@
 .HomePage {
-    height: 40em;
-    width:100%;
+    height: 90vh;
+    width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    background-color: #2e2e2e;  /* Dark Gray */
+    color: white;
+}
+
+.leftCol, .rightCol {
+    margin-top: 15vh;
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+.leftCol {
+    border-right: 2px solid white; /* Add vertical line */
+}
+
+.leftCol p {
+    text-align: left;
+    font-size: 1.5em;  /* Increased Font Size */
+    line-height: 1.5;  /* Better Line Spacing */
+    font-weight: 400;  /* Font Weight */
+}
+
+.rightCol {
+    font-size: 1.5em;  /* Increased Font Size */
+    line-height: 1.5;  /* Better Line Spacing */
 }
 
 .ContentLinks {
-    width: 30%;
+    color: white;
     display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
+    flex-direction: column;
+    gap: 20px;
 }
+
+.actionButton {
+    padding: 10px 20px;
+    background-color: #FFA07A;  /* Hermes-inspired orange */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.actionButton:hover {
+    background-color: #FF7F50;  /* darker Hermes-inspired orange */
+}
+
+/* Mobile version */
+@media (max-width: 768px) {
+    .HomePage {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .leftCol, .rightCol {
+        flex: unset;
+        width: 100%;
+        border-right: none;  /* Remove vertical line */
+        margin-top: 5vh;  /* Adjust vertical positioning */
+    }
+
+    .leftCol p {
+        text-align: center;
+        margin-bottom: 5vh;  /* Space between explanation and buttons */
+    }
+
+    .ContentLinks {
+        flex-direction: column;  /* Switch to single column */
+        gap: 10px;
+    }
+
+    .actionButton {
+        padding: 8px 16px;
+    }
+}
+

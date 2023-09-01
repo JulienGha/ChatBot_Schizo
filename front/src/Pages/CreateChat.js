@@ -20,8 +20,13 @@ const CreateChatPage = () => {
       await axios(SignatureRequest)
         .then(response => {
           if (response.status === 200) {
-            window.open("/chat/" + response.data.chatId);
+            console.log(response)
+            document.cookie = `authToken=${response.data.token}; expires=${new Date(response.data.exp).toUTCString()}; path=/`;
+            window.location.replace("/chat/" + response.data.chatId, { replace: false });
           }
+        })
+        .catch(error => {
+          setErrorMsg(error)
         })
     } catch (error) {
       console.log(error)
@@ -33,6 +38,13 @@ const CreateChatPage = () => {
     <div>
       <Navbar></Navbar>
       <div className='CreatePage'>
+        <div className="explanation">
+          <p>
+            In order to ensure your anonymity, we do not require an account to use this service.
+            Instead, we ask you to set a password. Upon creating a chat, you'll be provided with
+            a unique Chat ID. To re-access your chat, you'll need both this Chat ID and the password you set.
+          </p>
+        </div>
         <input
           type="password"
           placeholder="Set Password"
@@ -40,7 +52,7 @@ const CreateChatPage = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button onClick={handleCreateChat}>Create Chat</button>
-        {errorMsg}
+        {errorMsg && <div className="error">{errorMsg}</div>}
       </div>
       <Footer></Footer>
     </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
+import axios from 'axios';
 import '../Styles/Chat.css'
 
 const ChatbotInterface = () => {
@@ -21,6 +22,26 @@ const ChatbotInterface = () => {
 
         // Clear input field
         setInputMessage('');
+    };
+
+
+    const handleTestCredential = () => {
+        const profileRequest = {
+            method: 'post',
+            url: `http://localhost:5000/test_cookie`,
+            withCredentials: true,
+            data: {
+                chatId: params.chat_id,
+              },
+        };
+
+        axios(profileRequest)
+            .then(response => {
+                console.log(response.data); // Log the response data
+            })
+            .catch(error => {
+                console.log(error);
+            });
     };
 
     return (
@@ -44,6 +65,7 @@ const ChatbotInterface = () => {
                     />
                     <button onClick={handleSendMessage}>Send</button>
                 </div>
+                <button onClick={handleTestCredential}>test cookie</button>
             </div>
             <Footer></Footer>
         </div>

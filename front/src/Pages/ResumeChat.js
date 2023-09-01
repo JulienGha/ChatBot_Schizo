@@ -21,12 +21,13 @@ const ResumeChatPage = () => {
       };
       await axios(SignatureRequest)
         .then(response => {
-          console.log(response)
           if (response.status === 200) {
-            window.open("/chat/" + chatId);
-          } else {
-            setErrorMsg(response.message)
+            document.cookie = `authToken=${response.data.token}; expires=${new Date(response.data.exp * 1000).toUTCString()}; path=/`;
+            window.location.replace("/chat/" + chatId, { replace: false });
           }
+        })
+        .catch(error => {
+          setErrorMsg(error.response.data.message)
         })
     } catch (error) {
       console.log(error)
@@ -37,6 +38,9 @@ const ResumeChatPage = () => {
     <div>
       <Navbar></Navbar>
       <div className='ResumePage'>
+        <p className='explanation'>
+          If you already have a chat session, please enter your Chat ID and Password. The Chat ID was provided when you created the chat.
+        </p>
         <input
           type="text"
           placeholder="Chat ID"
@@ -49,8 +53,8 @@ const ResumeChatPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button onClick={handleResumeChat}>Resume Chat</button>
         <p>{errorMsg}</p>
+        <button onClick={handleResumeChat}>Resume Chat</button>
       </div>
       <Footer></Footer>
     </div>

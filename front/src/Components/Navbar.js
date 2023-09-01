@@ -3,26 +3,24 @@ import { Link } from 'react-router-dom';
 import axios from "axios";
 import "../Styles/Navbar.css"
 
-
 const Navbar = () => {
 
     const handleCreateChat = async () => {
-        // Test function to see if the server is answering
         try {
           const response = await axios.get(`http://localhost:5000/test`);
-          console.log(response)
+          alert(response.status)
         } catch (error) {
           console.log(error)
         }
-      };
-
+    };
 
     return (
-            <div className="DivNavbar">
-                <Link to="*">Hermegency</Link>
+        <div className="containerNavBar">
+            <nav className="DivNavbar">
+                <Link to="/">Hermegency</Link>  {/* Updated link to home */}
                 <button onClick={handleCreateChat}>Server test</button>
-                <p></p>
-            </div>
-        )
+            </nav>
+        </div>
+    )
 }
-export default Navbar
+export default Navbar;

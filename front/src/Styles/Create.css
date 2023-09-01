@@ -1,8 +1,54 @@
 .CreatePage {
-    height: 40em;
-    width:100%;
+    height: 90vh;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: #2e2e2e;
+    /* Dark Gray */
+    color: white;
+}
+
+input[type="password"] {
+    width: 60%;
+    height: 50px;
+    /* Make it big for better visibility */
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 1.2em;
+    border: 2px solid #FFA07A;
+    /* Hermes-inspired orange */
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #FFA07A;
+    /* Hermes-inspired orange */
+    color: white;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #FF7F50;
+    /* darker Hermes-inspired orange */
+}
+
+.explanation {
+    width: 70%;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #ffffff;
+    /* White color for better readability */
+}
+
+.error {
+    margin-top: 10px;
+    color: red;
+    /* Red for error messages */
 }

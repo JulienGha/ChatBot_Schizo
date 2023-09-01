@@ -1,10 +1,44 @@
-.DivNavbar{
-    height: 5em;
-    width: 90%;
-    display: flex;
-    flex-direction: row;
-    padding-right: 5%;
-    padding-left: 5%;
-    justify-content: space-between;
-    align-items: center;
+.containerNavBar {
+    height: 10vh;
+    width: 100%;
+    background-color: #1e1e1e; /* Darker shade of gray */
+    z-index: 9999;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
 }
+
+.DivNavbar{
+    display: flex;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;  /* Vertically align items */
+    padding: 0 2em;  /* Padding on left and right */
+    color: white;  /* Set text color to white */
+}
+
+.DivNavbar a {
+    text-decoration: none;
+    font-size: 1.5em;
+    color: white;
+}
+
+.DivNavbar button {
+    padding: 10px 20px;
+    background-color: #FFA07A;  /* Hermes-inspired orange */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.DivNavbar button:hover {
+    background-color: #FF7F50;  /* Darker Hermes-inspired orange */
+}
+
+@media (max-width: 768px) {
+    .DivNavbar {
+      flex-direction: column;
+      align-items: center;
+      padding-right: 1em;
+      padding-left: 1em;
+    }
+  }

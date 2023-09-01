@@ -1,10 +1,37 @@
 .DivFooter {
     height: 10em;
-    width: 90%;
+    width: 100%;
+    box-sizing: border-box;
+    /* Include padding in the width */
+    background-color: #1e1e1e;
     display: flex;
     flex-direction: row;
-    padding-right: 5%;
-    padding-left: 5%;
+    padding: 0 2em;
     justify-content: space-between;
     align-items: center;
+    color: white;
+    box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.DivFooter a,
+.DivFooter p {
+    font-size: 1em;
+    margin: 0;
+    /* Resetting any browser defaults */
+    color: white;
+    /* Text color */
+}
+
+.DivFooter a:hover {
+    text-decoration: underline;
+    /* Underline link on hover */
+}
+
+@media (max-width: 768px) {
+    .DivFooter {
+        flex-direction: column;
+        align-items: center;
+        padding: 1em;
+        width: 100%;
+    }
 }
