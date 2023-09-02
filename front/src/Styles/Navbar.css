@@ -21,18 +21,7 @@
     color: white;
 }
 
-.DivNavbar button {
-    padding: 10px 20px;
-    background-color: #FFA07A;  /* Hermes-inspired orange */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
 
-.DivNavbar button:hover {
-    background-color: #FF7F50;  /* Darker Hermes-inspired orange */
-}
 
 @media (max-width: 768px) {
     .DivNavbar {

@@ -142,14 +142,6 @@ def resume_chat():
         return jsonify({"message": "Chat not found"}), 404
 
 
-@app.route('/test_cookie', methods=['POST'])
-@verify_token
-def test_cookie():
-    # You can access the authenticated user's payload using request.current_user
-    # Process the request and return the response
-    return jsonify({"message": "Credential Test Successful"})
-
-
 @app.route('/get_messages', methods=['GET'])
 @verify_token
 def get_messages():

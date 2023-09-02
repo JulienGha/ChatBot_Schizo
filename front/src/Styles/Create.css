@@ -10,21 +10,7 @@
     color: white;
 }
 
-.buttonCreate {
-    padding: 10px 20px;
-    background-color: #FFA07A;
-    /* Hermes-inspired orange */
-    color: white;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
 
-.button:hover {
-    background-color: #FF7F50;
-    /* darker Hermes-inspired orange */
-}
 
 .explanation {
     width: 70%;
@@ -61,7 +47,3 @@
 
 }
 
-.form-container button {
-    cursor: pointer;
-    border: 2px solid #FFA07A;
-}

@@ -68,24 +68,6 @@ const ChatbotInterface = () => {
         handleSendMessage();
     };
 
-    const handleTestCredential = () => {
-        const profileRequest = {
-            method: 'post',
-            url: `http://localhost:5000/test_cookie`,
-            withCredentials: true,
-            data: {
-                chat_id: params.chat_id,
-            },
-        };
-
-        axios(profileRequest)
-            .then(response => {
-                alert(response.status); // Log the response data
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
 
     return (
         <div>
@@ -100,7 +82,7 @@ const ChatbotInterface = () => {
                     ))}
                 </div>
                 <div className="input-area">
-                <form className="input-area" onSubmit={handleFormSubmit}>
+                <form  onSubmit={handleFormSubmit} className='form-area'>
                     <input
                         type="text"
                         value={inputMessage}
@@ -110,7 +92,6 @@ const ChatbotInterface = () => {
                     <button type="submit">Send</button>
                 </form>
                 </div>
-                <button onClick={handleTestCredential}>Test Cookie</button>
             </div>
             <Footer></Footer>
         </div>

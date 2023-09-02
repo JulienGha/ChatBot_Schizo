@@ -26,6 +26,7 @@ button {
     padding: 10px 20px;
     background-color: #FFA07A;
     color: white;
+    border: none;
     text-decoration: none;
     border-radius: 5px;
 }
@@ -42,22 +43,26 @@ button {
     flex-direction: column;
     align-items: center;
     width: 100%;
-  }
-  
-  .form-container input,
-  .form-container button {
-    width: 75%;  /* Adjust the width as you like */
-    padding: 10px; /* Make it bigger */
-    margin: 10px 0; /* Add some margin to separate the elements */
-    font-size: 18px; /* Increase the font size */
-    
-  }
-  
-  .form-container button {
+}
+
+.form-container input,
+.form-container button {
+    width: 75%;
+    /* Adjust the width as you like */
+    padding: 10px;
+    /* Make it bigger */
+    margin: 10px 0;
+    /* Add some margin to separate the elements */
+    font-size: 18px;
+    /* Increase the font size */
+
+}
+
+.form-container button {
     cursor: pointer;
     border: 2px solid #FFA07A;
-  }
-  
+}
+
 
 /* Mobile version */
 @media (max-width: 768px) {

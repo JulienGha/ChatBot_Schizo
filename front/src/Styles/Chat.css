@@ -41,17 +41,15 @@
 }
 
 .input-area {
-    width: 80%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-input[type="text"] {
-    width: 75%;
-}
-
-button {
-    width: 20%;
-    padding: 10px;
+.form-area {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
 }
