@@ -31,7 +31,7 @@ const ChatbotInterface = () => {
             await axios(Request)
                 .then(response => {
                     setMessages(response.data.messages)
-                }) 
+                })
                 .catch(error => {
                     console.log(error);
                 });
@@ -75,22 +75,22 @@ const ChatbotInterface = () => {
             <div className="ChatPage">
                 <div className="chat-window" ref={chatWindowRef}>
                     <h1>Chatbot Interface for Chat ID: {params.chat_id}</h1>
-                    {messages.map((message, index) => (
+                    {messages.length > 0 && messages.map((message, index) => (
                         <div key={index} className={`message ${message.user}`}>
                             {message.content}
                         </div>
                     ))}
                 </div>
                 <div className="input-area">
-                <form  onSubmit={handleFormSubmit} className='form-area'>
-                    <input
-                        type="text"
-                        value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
-                        placeholder="Type your message..."
-                    />
-                    <button type="submit">Send</button>
-                </form>
+                    <form onSubmit={handleFormSubmit} className='form-area'>
+                        <input
+                            type="text"
+                            value={inputMessage}
+                            onChange={(e) => setInputMessage(e.target.value)}
+                            placeholder="Type your message..."
+                        />
+                        <button style={{"padding": "30px 20px"}} type="submit">Send</button>
+                    </form>
                 </div>
             </div>
             <Footer></Footer>
