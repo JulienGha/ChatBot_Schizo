@@ -25,34 +25,34 @@ db = client['mydatabase']
 collection = db['chats']
 
 
-# Your JWT secret key
-JWT_SECRET = "345TGHIOPUYFRDFGJNCB81234RVB9HB99YNXZXA0AXHBXLPM"
-
-
 def verify_token(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
 
-        chat_id = request.json.get('chatId')
+        # Determine the method and extract chat_id accordingly
+        if request.method == 'POST':
+            chat_id = request.json.get('chat_id')
+        elif request.method == 'GET':
+            chat_id = request.args.get('chat_id')
+        elif request.method == 'PATCH':
+            chat_id = request.json.get('chat_id')
+        else:
+            return jsonify({"error": "Unsupported HTTP method"}), 400
+
         chat_data = collection.find_one({"chat_id": chat_id})
         stored_jwt = chat_data.get('jwt_key')
-        print(stored_jwt)
 
         auth_token = request.cookies.get('authToken')
-        print(auth_token)
+
         if not auth_token:
             return jsonify({"error": "Missing token"}), 401
 
         try:
             payload = jwt.decode(auth_token, stored_jwt, algorithms=['HS256'])
-            # You can access the payload data here, e.g., payload['user_id']
-            # You can also store the payload in the request context for further processing
             request.current_user = payload
         except jwt.ExpiredSignatureError:
-            print("la")
             return jsonify({"error": "Token has expired"}), 401
         except jwt.InvalidTokenError:
-            print("koko")
             return jsonify({"error": "Invalid token"}), 401
 
         return func(*args, **kwargs)
@@ -82,12 +82,13 @@ def create_chat():
     chat_data = {
         "chat_id": unique_id,
         "password": hashed_password,
-        "jwt_key": generate_unique_id()
+        "jwt_key": generate_unique_id(),
+        "messages": []
     }
     collection.insert_one(chat_data)
 
     # Generate JWT token
-    expiration = datetime.utcnow() + timedelta(hours=1)  # Set token expiration time
+    expiration = datetime.utcnow() + timedelta(hours=24)  # Set token expiration time
     payload = {
         "chat_id": unique_id,
         "exp": expiration
@@ -95,7 +96,7 @@ def create_chat():
     token = jwt.encode(payload, chat_data.get('jwt_key'), algorithm='HS256')
 
     # Create response with JWT cookie
-    response = make_response(jsonify({"chatId": unique_id,
+    response = make_response(jsonify({"chat_id": unique_id,
                                       "token": token,
                                       "exp": expiration}), 200)
 
@@ -110,7 +111,7 @@ def create_chat():
 @app.route('/resume', methods=['POST'])
 def resume_chat():
 
-    chat_id = request.json.get('chatId')
+    chat_id = request.json.get('chat_id')
     password = request.json.get('password')
 
     # Retrieve chat data from MongoDB based on chat_id
@@ -123,14 +124,14 @@ def resume_chat():
         # Verify password using bcrypt
         if bcrypt.checkpw(password.encode('utf-8'), stored_password):
             # Generate and send JWT as a cookie
-            expiration = datetime.utcnow() + timedelta(hours=1)  # Set token expiration time
+            expiration = datetime.utcnow() + timedelta(hours=24)  # Set token expiration time
             payload = {
                 "chat_id": str(chat_data['_id']),
                 "exp": expiration
             }
             token = jwt.encode(payload, stored_jwt, algorithm='HS256')
             # Create response with JWT cookie
-            response = make_response(jsonify({"chatId": chat_id,
+            response = make_response(jsonify({"chat_id": chat_id,
                                               "token": token,
                                               "exp": expiration}), 200)
 
@@ -147,6 +148,38 @@ def test_cookie():
     # You can access the authenticated user's payload using request.current_user
     # Process the request and return the response
     return jsonify({"message": "Credential Test Successful"})
+
+
+@app.route('/get_messages', methods=['GET'])
+@verify_token
+def get_messages():
+    chat_id = request.args.get('chat_id')
+    chat_data = collection.find_one({"chat_id": chat_id})
+
+    # Extract messages field from the MongoDB document and return it
+    messages = chat_data.get("messages", [])
+
+    return jsonify({"messages": messages})
+
+
+@app.route('/post_messages', methods=['POST'])
+@verify_token
+def post_messages():
+    chat_id = request.json.get('chat_id')
+    message_content = request.json.get('message')  # Assuming message is part of request JSON
+    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format it as you like
+
+    new_message = {
+        "user": "user",
+        "content": message_content,
+        "date": current_date
+    }
+
+    # Add the new message to the 'messages' field in the MongoDB document
+    collection.update_one({"chat_id": chat_id}, {"$push": {"messages": new_message}})
+
+    return jsonify({"status": "Message added",
+                    "date": current_date})
 
 
 # test function to see if our client can send request

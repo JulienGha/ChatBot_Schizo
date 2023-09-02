@@ -10,19 +10,7 @@
     color: white;
 }
 
-input[type="password"] {
-    width: 60%;
-    height: 50px;
-    /* Make it big for better visibility */
-    padding: 10px;
-    margin: 10px 0;
-    font-size: 1.2em;
-    border: 2px solid #FFA07A;
-    /* Hermes-inspired orange */
-    border-radius: 5px;
-}
-
-button {
+.buttonCreate {
     padding: 10px 20px;
     background-color: #FFA07A;
     /* Hermes-inspired orange */
@@ -33,7 +21,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.button:hover {
     background-color: #FF7F50;
     /* darker Hermes-inspired orange */
 }
@@ -51,4 +39,29 @@ button:hover {
     margin-top: 10px;
     color: red;
     /* Red for error messages */
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.form-container input,
+.form-container button {
+    width: 75%;
+    /* Adjust the width as you like */
+    padding: 10px;
+    /* Make it bigger */
+    margin: 10px 0;
+    /* Add some margin to separate the elements */
+    font-size: 18px;
+    /* Increase the font size */
+
+}
+
+.form-container button {
+    cursor: pointer;
+    border: 2px solid #FFA07A;
 }

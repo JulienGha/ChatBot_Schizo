@@ -1,9 +1,40 @@
 .AboutusPage {
-    height: 45em;
-    width:100%;
-    margin-top: 5em;
+    height: 90vh;  /* To occupy the full viewport height */
+    width: 100%;
+    background-color: #2e2e2e;  /* Dark Gray */
+    color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.AboutusContent {
+    width: 60%;
+    text-align: center;
+    font-size: 1.2em;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Mobile Version */
+@media (max-width: 768px) {
+    .AboutusPage {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .AboutusContent {
+        width: 90%;
+        font-size: 1em;
+    }
 }

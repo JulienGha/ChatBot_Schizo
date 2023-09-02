@@ -5,9 +5,14 @@ import Footer from '../Components/Footer';
 import '../Styles/Resume.css'
 
 const ResumeChatPage = () => {
-  const [chatId, setChatId] = useState('');
+  const [chat_id, setChatId] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    handleResumeChat();
+  };
 
   const handleResumeChat = async () => {
     try {
@@ -15,7 +20,7 @@ const ResumeChatPage = () => {
         method: 'post',
         url: `http://localhost:5000/resume`,
         data: {
-          chatId: chatId,
+          chat_id: chat_id,
           password: password,
         },
       };
@@ -23,7 +28,7 @@ const ResumeChatPage = () => {
         .then(response => {
           if (response.status === 200) {
             document.cookie = `authToken=${response.data.token}; expires=${new Date(response.data.exp * 1000).toUTCString()}; path=/`;
-            window.location.replace("/chat/" + chatId, { replace: false });
+            window.location.replace("/chat/" + chat_id, { replace: false });
           }
         })
         .catch(error => {
@@ -41,20 +46,22 @@ const ResumeChatPage = () => {
         <p className='explanation'>
           If you already have a chat session, please enter your Chat ID and Password. The Chat ID was provided when you created the chat.
         </p>
-        <input
-          type="text"
-          placeholder="Chat ID"
-          value={chatId}
-          onChange={(e) => setChatId(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <p>{errorMsg}</p>
-        <button onClick={handleResumeChat}>Resume Chat</button>
+        <form onSubmit={handleSubmit} className='form-container'>
+          <input
+            type="text"
+            placeholder="Chat ID"
+            value={chat_id}
+            onChange={(e) => setChatId(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit">Resume Chat</button>
+        </form>
+        {errorMsg && <p>{errorMsg}</p>}
       </div>
       <Footer></Footer>
     </div>

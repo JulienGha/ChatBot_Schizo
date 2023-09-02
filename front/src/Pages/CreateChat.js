@@ -8,6 +8,11 @@ const CreateChatPage = () => {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('')
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    handleCreateChat();
+  };
+
   const handleCreateChat = async () => {
     try {
       var SignatureRequest = {
@@ -20,9 +25,8 @@ const CreateChatPage = () => {
       await axios(SignatureRequest)
         .then(response => {
           if (response.status === 200) {
-            console.log(response)
             document.cookie = `authToken=${response.data.token}; expires=${new Date(response.data.exp).toUTCString()}; path=/`;
-            window.location.replace("/chat/" + response.data.chatId, { replace: false });
+            window.location.replace("/chat/" + response.data.chat_id, { replace: false });
           }
         })
         .catch(error => {
@@ -35,6 +39,7 @@ const CreateChatPage = () => {
 
 
   return (
+
     <div>
       <Navbar></Navbar>
       <div className='CreatePage'>
@@ -45,13 +50,16 @@ const CreateChatPage = () => {
             a unique Chat ID. To re-access your chat, you'll need both this Chat ID and the password you set.
           </p>
         </div>
-        <input
-          type="password"
-          placeholder="Set Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button onClick={handleCreateChat}>Create Chat</button>
+        <form onSubmit={handleSubmit} className='form-container'>
+          <input
+            type="password"
+            placeholder="Set Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="your-input-class"  // Your original input class here
+          />
+          <button type="submit" className="button">Create Chat</button>  
+        </form>
         {errorMsg && <div className="error">{errorMsg}</div>}
       </div>
       <Footer></Footer>
