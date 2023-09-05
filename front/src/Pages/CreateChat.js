@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
-import "../Styles/Create.css"
 import axios from 'axios';
+import "../Styles/Create.css"
+import "../Styles/AllStyle.css"
+
 
 const CreateChatPage = () => {
   const [password, setPassword] = useState('');

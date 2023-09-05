@@ -3,6 +3,7 @@ from flask_cors import CORS
 # from rq import Queue
 # from workers import conn
 from datetime import datetime, timedelta
+from time import sleep
 from pymongo import MongoClient
 import bcrypt
 import jwt
@@ -166,12 +167,23 @@ def post_messages():
         "content": message_content,
         "date": current_date
     }
-
     # Add the new message to the 'messages' field in the MongoDB document
     collection.update_one({"chat_id": chat_id}, {"$push": {"messages": new_message}})
 
-    return jsonify({"status": "Message added",
-                    "date": current_date})
+    # mettre la logique de réponse depuis Llama 2 ici
+
+    answer = {
+        "user": "bot",
+        "content": "réponse",
+        "date": current_date
+    }
+
+    collection.update_one({"chat_id": chat_id}, {"$push": {"messages": answer}})
+
+    sleep(2)
+
+    return jsonify({"messages": [new_message,
+                                 answer]})
 
 
 # test function to see if our client can send request

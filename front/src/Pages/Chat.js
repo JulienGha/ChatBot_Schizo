@@ -4,10 +4,13 @@ import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
 import axios from 'axios';
 import '../Styles/Chat.css';
+import "../Styles/AllStyle.css"
+
 
 const ChatbotInterface = () => {
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
+    const [lock, setLock] = useState(false)
     const params = useParams();
 
     const chatWindowRef = useRef(null);
@@ -41,6 +44,7 @@ const ChatbotInterface = () => {
 
     const handleSendMessage = () => {
         if (inputMessage.trim() === '') return;
+        setLock(true)
         const profileRequest = {
             method: 'post',
             url: `http://localhost:5000/post_messages`,
@@ -50,12 +54,15 @@ const ChatbotInterface = () => {
                 message: inputMessage,
             },
         };
-
         axios(profileRequest)
             .then(response => {
-                const newMessages = [...messages, { content: inputMessage, user: 'user', date: response.data.date }];
-                setMessages(newMessages);
+                const newMessages = []
+                response.data.messages.forEach(message => {
+                    newMessages.push({ content: message.content, user: message.user, date: message.date });
+                }); 
+                setMessages([...messages, newMessages[0], newMessages[1]]);
                 setInputMessage('');
+                setLock(false)
             })
             .catch(error => {
                 console.log(error);
@@ -64,7 +71,6 @@ const ChatbotInterface = () => {
 
     const handleFormSubmit = (e) => {
         e.preventDefault(); // Prevent the form from refreshing the page
-
         handleSendMessage();
     };
 
@@ -89,7 +95,9 @@ const ChatbotInterface = () => {
                             onChange={(e) => setInputMessage(e.target.value)}
                             placeholder="Type your message..."
                         />
-                        <button style={{"padding": "30px 20px"}} type="submit">Send</button>
+                        {(!lock) ? <button style={{"padding": "30px 20px"}} type="submit">Send</button>:
+                        <></>}
+                        
                     </form>
                 </div>
             </div>

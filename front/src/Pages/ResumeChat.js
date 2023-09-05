@@ -3,6 +3,8 @@ import axios from 'axios';
 import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
 import '../Styles/Resume.css'
+import "../Styles/AllStyle.css"
+
 
 const ResumeChatPage = () => {
   const [chat_id, setChatId] = useState('');

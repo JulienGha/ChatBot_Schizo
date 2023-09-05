@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
 import '../Styles/Home.css';
+import "../Styles/AllStyle.css"
+
 
 function HomePage() {
     return (

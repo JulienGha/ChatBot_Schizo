@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import "../Styles/Navbar.css"
+import "../Styles/AllStyle.css"
 
 const Navbar = () => {
 

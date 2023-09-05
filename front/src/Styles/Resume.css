@@ -22,14 +22,6 @@ input[type="password"] {
     border-radius: 5px;
 }
 
-button {
-    padding: 10px 20px;
-    background-color: #FFA07A;
-    color: white;
-    border: none;
-    text-decoration: none;
-    border-radius: 5px;
-}
 
 .explanation {
     width: 60%;
@@ -58,10 +50,6 @@ button {
 
 }
 
-.form-container button {
-    cursor: pointer;
-    border: 2px solid #FFA07A;
-}
 
 
 /* Mobile version */
