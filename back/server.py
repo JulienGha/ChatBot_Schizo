@@ -13,6 +13,7 @@ import uuid
 import random
 import string
 import openai
+import key
 import os
 
 
@@ -26,7 +27,7 @@ client = MongoClient('localhost', 27017)
 db = client['mydatabase']
 collection = db['chats']
 
-openai.api_key = "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"
+openai.api_key = key.openaikey # create a python key file with all the api keys
 
 
 def interact_gpt(current_message, chat_id):
