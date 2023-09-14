@@ -3,4 +3,5 @@
 /workspace.xml
 /Llama-2-13b-chat/
 /Llama-2-13b-chat-hf/
-/datasets/
+/datasets/Symptoms/
+/datasets/mental_full.json
