@@ -12,6 +12,7 @@ from tasks import create_new_chat
 import uuid
 import random
 import string
+import openai
 import os
 
 
@@ -24,6 +25,27 @@ CORS(app, supports_credentials=True)
 client = MongoClient('localhost', 27017)
 db = client['mydatabase']
 collection = db['chats']
+
+openai.api_key = "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"
+
+
+def interact_gpt(current_message, chat_id):
+    chat_data = collection.find_one({"chat_id": chat_id})
+    messages = chat_data.get('messages') if chat_data else []
+    messages.append(current_message)
+    messages_str = ", ".join([f"{message['user']}: {message['content']}" for message in messages])
+    prompt = f"You are an assistant for people suffering for a mental health crisis. " \
+             f"You need to provide adequate guidance without saying that you are a language model, " \
+             f"you need to ask question in order to understand what is happening to the person. " \
+             f"For the moment the conversation has been the following:  {messages_str} " \
+             f"you need to generate a next message either to get more information or, once you spotted the problem, " \
+             f"the adequate thing to do for the person, either calling ambulance, " \
+             f"seeking assistance or doctor appointment."
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        prompt=prompt
+    )
+    print(response)
 
 
 def verify_token(func):
@@ -52,8 +74,10 @@ def verify_token(func):
             payload = jwt.decode(auth_token, stored_jwt, algorithms=['HS256'])
             request.current_user = payload
         except jwt.ExpiredSignatureError:
+            print("expired token")
             return jsonify({"error": "Token has expired"}), 401
         except jwt.InvalidTokenError:
+            print("wrong token")
             return jsonify({"error": "Invalid token"}), 401
 
         return func(*args, **kwargs)
@@ -170,6 +194,11 @@ def post_messages():
     # Add the new message to the 'messages' field in the MongoDB document
     collection.update_one({"chat_id": chat_id}, {"$push": {"messages": new_message}})
 
+    try:
+        interact_gpt(new_message, chat_id)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
     # mettre la logique de réponse depuis Llama 2 ici
 
     answer = {
@@ -179,8 +208,6 @@ def post_messages():
     }
 
     collection.update_one({"chat_id": chat_id}, {"$push": {"messages": answer}})
-
-    sleep(2)
 
     return jsonify({"messages": [new_message,
                                  answer]})
