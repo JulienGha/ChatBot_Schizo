@@ -1,5 +1,21 @@
 import json
 import PyPDF2
+import nbformat
+from nbconvert import PythonExporter
+
+
+def convert_notebook_to_python(notebook_path, python_path):
+    # Load Jupyter/IPython notebook file
+    with open(notebook_path, encoding='utf-8') as f:
+        notebook = nbformat.read(f, as_version=4)
+
+    # Convert to Python script
+    python_exporter = PythonExporter()
+    python_code, _ = python_exporter.from_notebook_node(notebook)
+
+    # Write to Python script file
+    with open(python_path, 'w', encoding='utf-8') as f:
+        f.write(python_code)
 
 
 def convert_pdf_into_json(file):
@@ -36,4 +52,4 @@ def convert_pdf_into_json(file):
         f.write(json_object)
 
 
-convert_pdf_into_json('Prevalence of alcohol use disorders inschizophrenia')
+convert_notebook_to_python('datasets/13.chat-with-multiple-pdfs-using-llama-2-and-langchain.ipynb', 'YourScript.py')
