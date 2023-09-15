@@ -45,7 +45,7 @@ const ResumeChatPage = () => {
     <div>
       <Navbar></Navbar>
       <div className='ResumePage'>
-        <p className='explanation'>
+        <p className='explanationR'>
           If you already have a chat session, please enter your Chat ID and Password. The Chat ID was provided when you created the chat.
         </p>
         <form onSubmit={handleSubmit} className='form-container'>

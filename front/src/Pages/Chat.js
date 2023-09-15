@@ -11,6 +11,7 @@ const ChatbotInterface = () => {
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
     const [lock, setLock] = useState(false)
+    const [chatPurpose, setChatPurpose] = useState('')
     const params = useParams();
 
     const chatWindowRef = useRef(null);
@@ -34,6 +35,7 @@ const ChatbotInterface = () => {
             await axios(Request)
                 .then(response => {
                     setMessages(response.data.messages)
+                    setChatPurpose(response.data.chatPurpose)
                 })
                 .catch(error => {
                     console.log(error);
@@ -80,7 +82,7 @@ const ChatbotInterface = () => {
             <Navbar></Navbar>
             <div className="ChatPage">
                 <div className="chat-window" ref={chatWindowRef}>
-                    <h1>Chatbot Interface for Chat ID: {params.chat_id}</h1>
+                    <h1>Chat ID: {params.chat_id} Chat type: {chatPurpose}</h1>
                     {messages.length > 0 && messages.map((message, index) => (
                         <div key={index} className={`message ${message.user}`}>
                             {message.content}

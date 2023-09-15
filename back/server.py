@@ -100,15 +100,19 @@ def create_chat():
 
     # Encrypt password
     password = request.json.get('password')  # Get password from request
+    chatPurpose = request.json.get('chatPurpose')  # Get type from request
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     # Enqueue the image processing task
     unique_id = date
+    while collection.find_one({"chat_id": unique_id}):
+        unique_id += random.choice(string.ascii_letters)
 
     chat_data = {
         "chat_id": unique_id,
         "password": hashed_password,
         "jwt_key": generate_unique_id(),
+        "chatPurpose": chatPurpose,
         "messages": []
     }
     collection.insert_one(chat_data)
@@ -146,6 +150,7 @@ def resume_chat():
     if chat_data:
         stored_password = chat_data.get('password')
         stored_jwt = chat_data.get('jwt_key')
+        chatPurpose = chat_data.get('chatPurpose')
 
         # Verify password using bcrypt
         if bcrypt.checkpw(password.encode('utf-8'), stored_password):
@@ -159,6 +164,7 @@ def resume_chat():
             # Create response with JWT cookie
             response = make_response(jsonify({"chat_id": chat_id,
                                               "token": token,
+                                              "chatPurpose": chatPurpose,
                                               "exp": expiration}), 200)
 
             return response, 200
@@ -176,8 +182,27 @@ def get_messages():
 
     # Extract messages field from the MongoDB document and return it
     messages = chat_data.get("messages", [])
+    chatPurpose = chat_data.get("chatPurpose")
 
-    return jsonify({"messages": messages})
+    # If messages are empty, insert a welcome message
+    if not messages:
+        welcome_message_content = "Welcome to the chat! Feel free to ask any questions or seek assistance."
+        if chatPurpose == "knowledge":
+            welcome_message_content += " You have chosen the knowledge mode where you can learn about schizophrenia."
+        elif chatPurpose == "assistance":
+            welcome_message_content += " You have chosen the assistance mode where you can seek help regarding schizophrenia."
+
+        welcome_message = {
+            "user": "bot",
+            "content": welcome_message_content,
+            "date": datetime.utcnow().isoformat()
+        }
+        messages.append(welcome_message)
+
+        # Update the MongoDB document to include the welcome message
+        collection.update_one({"chat_id": chat_id}, {"$set": {"messages": messages}})
+
+    return jsonify({"messages": messages, "chatPurpose": chatPurpose})
 
 
 @app.route('/post_messages', methods=['POST'])

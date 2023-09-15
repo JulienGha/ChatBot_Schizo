@@ -8,7 +8,9 @@ import "../Styles/AllStyle.css"
 
 const CreateChatPage = () => {
   const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('')
+  const [errorMsg, setErrorMsg] = useState('');
+  const [chatPurpose, setChatPurpose] = useState('knowledge');
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +24,7 @@ const CreateChatPage = () => {
         url: `http://localhost:5000/create`,
         data: {
           password: password,
+          chatPurpose: chatPurpose,
         },
       };
       await axios(SignatureRequest)
@@ -53,6 +56,26 @@ const CreateChatPage = () => {
           </p>
         </div>
         <form onSubmit={handleSubmit} className='form-container'>
+          <div className="chat-purpose-toggle">
+            <label className={chatPurpose === 'knowledge' ? 'active' : ''}>
+              <input
+                type="radio"
+                value="knowledge"
+                checked={chatPurpose === 'knowledge'}
+                onChange={(e) => setChatPurpose(e.target.value)}
+              />
+              Get knowledge about schizophrenia
+            </label>
+            <label className={chatPurpose === 'assistance' ? 'active' : ''}>
+              <input
+                type="radio"
+                value="assistance"
+                checked={chatPurpose === 'assistance'}
+                onChange={(e) => setChatPurpose(e.target.value)}
+              />
+              Seek assistance
+            </label>
+          </div>
           <input
             type="password"
             placeholder="Set Password"
@@ -60,7 +83,7 @@ const CreateChatPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="your-input-class"  // Your original input class here
           />
-          <button type="submit" className="button">Create Chat</button>  
+          <button type="submit" className="button">Create Chat</button>
         </form>
         {errorMsg && <div className="error">{errorMsg}</div>}
       </div>
