@@ -21,6 +21,10 @@
     color: white;
 }
 
+.logoN{
+    width: auto; 
+    height: 18vh; 
+}
 
 
 @media (max-width: 768px) {
