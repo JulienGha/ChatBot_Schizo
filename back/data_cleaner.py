@@ -1,4 +1,5 @@
 import json
+import csv
 import PyPDF2
 import nbformat
 from nbconvert import PythonExporter
@@ -52,4 +53,21 @@ def convert_pdf_into_json(file):
         f.write(json_object)
 
 
-convert_notebook_to_python('datasets/13.chat-with-multiple-pdfs-using-llama-2-and-langchain.ipynb', 'YourScript.py')
+def turn_json_into_csv(file, output="default.csv"):
+    # Load JSON data
+    with open(file) as f:
+        data = json.load(f)
+
+    # Assuming JSON is a list of dictionaries
+    keys = data[0].keys()
+
+    # Write CSV data
+    with open(output, mode='w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=keys)
+        writer.writeheader()
+        for row in data:
+            writer.writerow(row)
+
+
+turn_json_into_csv("datasets/mental_health_requests.json", "datasets/mental_health_requests.csv")
+
