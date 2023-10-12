@@ -40,7 +40,7 @@ def get_tokenizer_model():
     # Create model
     model = AutoModelForCausalLM.from_pretrained(name, cache_dir='./model/'
                                                  , use_auth_token=auth_token, torch_dtype=torch.float16,
-                                                 rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True,
+                                                 rope_scaling={"type": "dynamic", "factor": 2},
                                                  device_map='auto')
 
     return tokenizer, model
@@ -92,7 +92,7 @@ PyMuPDFReader = download_loader("PyMuPDFReader")
 # Create PDF Loader
 loader = PyMuPDFReader()
 # Load documents
-documents = loader.load(file_path=Path('./datasets/Symptoms/cognitive_neuropsycho_schizo.pdf'), metadata=True)
+documents = loader.load(file_path=str(Path('cognitive_neuropsycho_schizo.pdf')), metadata=True)
 
 # Create an index - we'll be able to query this in a sec
 index = VectorStoreIndex.from_documents(documents)
