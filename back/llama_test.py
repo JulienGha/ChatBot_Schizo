@@ -1,7 +1,7 @@
 # Import streamlit for app dev
 import streamlit as st
 
-# Import transformer classes for generaiton
+# Import transformer classes for generation
 from transformers import AutoTokenizer, AutoModelForCausalLM, TextStreamer
 # Import torch for datatype attributes
 import torch
@@ -26,17 +26,26 @@ name = "meta-llama/Llama-2-13b-chat-hf"
 # Set auth token variable from hugging face
 auth_token = key.auth_token
 
+
+if torch.cuda.is_available():
+    # Set the current device to the GPU
+    print("set to gpu")
+    torch.cuda.set_device(0)
+
+
 @st.cache_resource
 def get_tokenizer_model():
     # Create tokenizer
     tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/', use_auth_token=auth_token)
-
     # Create model
     model = AutoModelForCausalLM.from_pretrained(name, cache_dir='./model/'
-                            , use_auth_token=auth_token, torch_dtype=torch.float16,
-                            rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True)
+                                                 , use_auth_token=auth_token, torch_dtype=torch.float16,
+                                                 rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True,
+                                                 device_map='auto')
 
     return tokenizer, model
+
+
 tokenizer, model = get_tokenizer_model()
 
 # Create a system prompt
@@ -65,7 +74,7 @@ llm = HuggingFaceLLM(context_window=4096,
                     tokenizer=tokenizer)
 
 # Create and dl embeddings instance
-embeddings=LangchainEmbedding(
+embeddings = LangchainEmbedding(
     HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 )
 
@@ -83,7 +92,7 @@ PyMuPDFReader = download_loader("PyMuPDFReader")
 # Create PDF Loader
 loader = PyMuPDFReader()
 # Load documents
-documents = loader.load(file_path=Path('./data/annualreport.pdf'), metadata=True)
+documents = loader.load(file_path=Path('./datasets/Symptoms/cognitive_neuropsycho_schizo.pdf'), metadata=True)
 
 # Create an index - we'll be able to query this in a sec
 index = VectorStoreIndex.from_documents(documents)
@@ -91,7 +100,7 @@ index = VectorStoreIndex.from_documents(documents)
 query_engine = index.as_query_engine()
 
 # Create centered main title
-st.title('🦙 Llama Banker')
+st.title('Llama')
 # Create a text input box for the user
 prompt = st.text_input('Input your prompt here')
 
