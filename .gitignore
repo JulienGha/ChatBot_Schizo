@@ -6,3 +6,4 @@ state_art/
 back/key.py
 back/llama/
 back/model/
+back/offload_folder/
