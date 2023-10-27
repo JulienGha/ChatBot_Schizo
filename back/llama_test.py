@@ -40,9 +40,8 @@ def get_tokenizer_model():
     tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/', use_auth_token=auth_token)
     # Create model
     model = AutoModelForCausalLM.from_pretrained(name, cache_dir='./model/'
-                                                 , use_auth_token=auth_token, torch_dtype=torch.float16,
-                                                 rope_scaling={"type": "dynamic", "factor": 2},
-                                                 device_map='auto')
+                                                 , use_auth_token=auth_token, torch_dtype=torch.bfloat16,
+                                                 rope_scaling={"type": "dynamic", "factor": 2})
     return tokenizer, model
 
 
@@ -57,15 +56,15 @@ You are a helpful, respectful and honest assistant.
 # Throw together the query wrapper
 query_wrapper_prompt = SimpleInputPrompt("{query_str} [/INST]")
 
-llm = HuggingFaceLLM(
-    context_window=2048,
-    max_new_tokens=1024,
-    generate_kwargs={"temperature": 0.0, "do_sample": False},
-    query_wrapper_prompt=query_wrapper_prompt,
-    device_map="auto",
-    # change these settings below depending on your GPU
-    model_kwargs={"torch_dtype": torch.float16},
-)
+
+llm = HuggingFaceLLM(context_window=4096,
+                    max_new_tokens=256,
+                    system_prompt=system_prompt,
+                    query_wrapper_prompt=query_wrapper_prompt,
+                    model=model,
+                    tokenizer=tokenizer,
+                    model_kwargs={"torch_dtype": torch.float16})
+
 
 # Create and dl embeddings instance
 embeddings = LangchainEmbedding(
@@ -76,7 +75,8 @@ embeddings = LangchainEmbedding(
 service_context = ServiceContext.from_defaults(
     chunk_size=512,
     llm=llm,
-    embed_model=embeddings
+    embed_model=embeddings,
+
 )
 # And set the service context
 set_global_service_context(service_context)
