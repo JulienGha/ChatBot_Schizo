@@ -3,9 +3,8 @@ back/Llama-2-13b-chat-hf/
 back/datasets/Symptoms/
 back/datasets/mental_full.json
 state_art/
-back/key.py
 back/llama/
 back/model/
 back/offload_folder/
-back/env/*
-back/mongodb/*
+back/env/
+back/mongodb/
