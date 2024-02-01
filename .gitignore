@@ -7,3 +7,5 @@ back/key.py
 back/llama/
 back/model/
 back/offload_folder/
+back/env/*
+back/mongodb/*
